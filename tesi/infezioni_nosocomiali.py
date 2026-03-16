@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 tabella = pd.read_csv("infezioni_nosocomiali.csv")
 #print(data.head())
 
-# Trasformare 'sesso' in numerico
+# Trasformare 'sesso' in numerico, il programma non accetta parole ma solo numeri!
 le = LabelEncoder()
 tabella['sesso'] = le.fit_transform(tabella['sesso'])  # M=1, F=0
 
