@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rischio Infezioni Nosocomiali</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #1a6bb5, #0d9488);
+      color: #fff;
+      padding: 2rem 2rem 1.5rem;
+    }
+
+    .card-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .card-header p {
+      margin-top: 0.4rem;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    .card-body {
+      padding: 2rem;
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #64748b;
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    .section-title:first-child { margin-top: 0; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input[type="number"], select {
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-size: 0.9rem;
+      color: #111827;
+      transition: border-color 0.2s;
+      width: 100%;
+      background: #fff;
+    }
+
+    input[type="number"]:focus, select:focus {
+      outline: none;
+      border-color: #1a6bb5;
+    }
+
+    .toggles {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+
+    .toggle-item:hover { border-color: #1a6bb5; background: #eff6ff; }
+
+    .toggle-item.active {
+      border-color: #1a6bb5;
+      background: #eff6ff;
+    }
+
+    .toggle-item span {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .toggle-item input[type="checkbox"] { display: none; }
+
+    .switch {
+      width: 36px;
+      height: 20px;
+      background: #cbd5e1;
+      border-radius: 10px;
+      position: relative;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .toggle-item.active .switch { background: #1a6bb5; }
+    .toggle-item.active .switch::after { transform: translateX(16px); }
+
+    .btn {
+      width: 100%;
+      margin-top: 1.75rem;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, #1a6bb5, #0d9488);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.2px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .btn:hover { opacity: 0.92; }
+    .btn:active { transform: scale(0.98); }
+
+    .result {
+      display: none;
+      margin-top: 1.5rem;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+
+    .result.alto {
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+    }
+
+    .result.basso {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+    }
+
+    .result .verdict {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .result.alto .verdict { color: #dc2626; }
+    .result.basso .verdict { color: #16a34a; }
+
+    .result .subtitle {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+
+    .bars { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.82rem;
+    }
+
+    .bar-label { width: 100px; text-align: right; color: #374151; font-weight: 600; }
+
+    .bar-track {
+      flex: 1;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.6s ease;
+    }
+
+    .bar-fill.danger { background: #ef4444; }
+    .bar-fill.safe { background: #22c55e; }
+
+    .bar-val { width: 42px; font-weight: 700; color: #111827; }
+
+    .loader {
+      display: none;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .loader-dot {
+      width: 10px; height: 10px;
+      background: #1a6bb5;
+      border-radius: 50%;
+      margin: 0 4px;
+      animation: bounce 0.8s infinite alternate;
+    }
+
+    .loader-dot:nth-child(2) { animation-delay: 0.2s; }
+    .loader-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      from { transform: translateY(0); opacity: 0.5; }
+      to   { transform: translateY(-8px); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-header">
+      <h1>Valutazione Rischio Infezioni Nosocomiali</h1>
+      <p>Inserisci i dati del paziente per ottenere una stima del rischio tramite modello predittivo.</p>
+    </div>
+    <div class="card-body">
+      <p class="section-title">Dati Anagrafici</p>
+      <div class="row">
+        <div class="field">
+          <label for="eta">Eta (anni)</label>
+          <input type="number" id="eta" min="0" max="120" placeholder="es. 65" />
+        </div>
+        <div class="field">
+          <label for="sesso">Sesso</label>
+          <select id="sesso">
+            <option value="M">Maschio</option>
+            <option value="F">Femmina</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="giorni">Giorni di degenza</label>
+          <input type="number" id="giorni" min="0" placeholder="es. 18" />
+        </div>
+      </div>
+
+      <p class="section-title">Fattori di Rischio Clinici</p>
+      <div class="toggles">
+        <label class="toggle-item" id="lbl-catetere">
+          <span>Catetere venoso</span>
+          <input type="checkbox" id="catetere" />
+          <div class="switch"></div>
+        </label>
+        <label class="toggle-item" id="lbl-ventilazione">
+          <span>Ventilazione</span>
+          <input type="checkbox" id="ventilazione" />
+          <div class="switch"></div>
+        </label>
+        <label class="toggle-item" id="lbl-antibiotici">
+          <span>Antibiotici</span>
+          <input type="checkbox" id="antibiotici" />
+          <div class="switch"></div>
+        </label>
+        <label class="toggle-item" id="lbl-chirurgia">
+          <span>Chirurgia</span>
+          <input type="checkbox" id="chirurgia" />
+          <div class="switch"></div>
+        </label>
+        <label class="toggle-item" id="lbl-immuno">
+          <span>Immunodeficienza</span>
+          <input type="checkbox" id="immuno" />
+          <div class="switch"></div>
+        </label>
+      </div>
+
+      <button class="btn" id="btnPredict">Calcola Rischio</button>
+
+      <div class="loader" id="loader">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="verdict" id="verdict"></div>
+        <div class="subtitle" id="subtitle"></div>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-label">Alto rischio</span>
+            <div class="bar-track"><div class="bar-fill danger" id="bar-alto" style="width:0%"></div></div>
+            <span class="bar-val" id="val-alto">0%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Basso rischio</span>
+            <div class="bar-track"><div class="bar-fill safe" id="bar-basso" style="width:0%"></div></div>
+            <span class="bar-val" id="val-basso">0%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.toggle-item input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        cb.closest('.toggle-item').classList.toggle('active', cb.checked);
+      });
+    });
+
+    document.getElementById('btnPredict').addEventListener('click', async () => {
+      const eta = document.getElementById('eta').value;
+      const giorni = document.getElementById('giorni').value;
+
+      if (!eta || !giorni) {
+        alert('Inserisci eta e giorni di degenza.');
+        return;
+      }
+
+      const payload = {
+        eta: eta,
+        sesso: document.getElementById('sesso').value,
+        giorni_ospedale: giorni,
+        catetere_venoso: document.getElementById('catetere').checked ? 1 : 0,
+        ventilazione: document.getElementById('ventilazione').checked ? 1 : 0,
+        antibiotici: document.getElementById('antibiotici').checked ? 1 : 0,
+        chirurgia: document.getElementById('chirurgia').checked ? 1 : 0,
+        immunodeficienza: document.getElementById('immuno').checked ? 1 : 0,
+      };
+
+      const result = document.getElementById('result');
+      const loader = document.getElementById('loader');
+      result.style.display = 'none';
+      loader.style.display = 'flex';
+
+      try {
+        const res = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        loader.style.display = 'none';
+
+        document.getElementById('bar-alto').style.width = data.probabilita_rischio + '%';
+        document.getElementById('bar-basso').style.width = data.probabilita_no_rischio + '%';
+        document.getElementById('val-alto').textContent = data.probabilita_rischio + '%';
+        document.getElementById('val-basso').textContent = data.probabilita_no_rischio + '%';
+
+        if (data.rischio === 1) {
+          result.className = 'result alto';
+          document.getElementById('verdict').textContent = 'Alto rischio di infezione';
+          document.getElementById('subtitle').textContent = 'Il profilo del paziente indica una probabilita elevata di contrarre un\'infezione nosocomiale.';
+        } else {
+          result.className = 'result basso';
+          document.getElementById('verdict').textContent = 'Basso rischio di infezione';
+          document.getElementById('subtitle').textContent = 'Il profilo del paziente non presenta fattori critici associati alle infezioni nosocomiali.';
+        }
+
+        result.style.display = 'block';
+      } catch (e) {
+        loader.style.display = 'none';
+        alert('Errore nella comunicazione con il server.');
+      }
+    });
+  </script>
+</body>
+</html>
